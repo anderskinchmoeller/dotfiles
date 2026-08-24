@@ -1,0 +1,11 @@
+zplug 'Aloxaf/fzf-tab', depth:1
+zplug 'sobolevn/fzf-simple-git', depth:1
+#zplug 'hadenlabs/zsh-core', depth:1
+
+SOBOLE_THEME_MODE=light
+zplug 'sobolevn/sobole-zsh-theme', as:theme, depth:1
+zplug 'zsh-users/zsh-syntax-highlighting', depth:1
+#zplug "jeffreytse/zsh-vi-mode", depth:1
+zplug "zsh-users/zsh-autosuggestions", depth:1
+
+zplug load

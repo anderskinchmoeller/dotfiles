@@ -1,0 +1,37 @@
+.DS_Store
+
+*.bak
+*backup
+* copy
+**/!
+*.confaaa
+*.confnfig
+
+config/sketchybar/test.txt
+karabiner/automatic_backups/
+
+.zsh/.zcompdump*
+.zsh/.zsh_history
+.zsh/.zsh_sessions/
+
+# macOS
+.DS_Store
+
+# Backup / accidental files
+*.bak
+*backup
+* copy
+*.confaaa
+*.confnfig
+
+# Files literally named !
+**/\!
+
+# Generated / test files
+config/sketchybar/test.txt
+karabiner/automatic_backups/
+
+# Zsh runtime files
+.zsh/.zcompdump*
+.zsh/.zsh_history
+.zsh/.zsh_sessions/

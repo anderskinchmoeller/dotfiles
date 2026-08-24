@@ -1,0 +1,147 @@
+# skhdrc — macOS 26 / current yabai
+#
+# Assumptions:
+#   - yabai, skhd, jq are installed
+#   - "Displays have separate Spaces" is enabled
+#   - four Spaces per display are intended for cmd-{1,2,3,4}
+#   - SketchyBar is optional; its triggers are kept from the original config
+#   - JankyBorders (`borders`) is optional for border on/off bindings
+
+## Navigation (cmd - ...)
+
+# Space navigation: Space 1..4 ON THE CURRENT DISPLAY.
+# Uses the display's actual .spaces array instead of assuming global Mission
+# Control indices are grouped 1-4, 5-8, etc. Missing slots are a safe no-op.
+cmd - 1 : SPACE="$(yabai -m query --displays --display | jq -r '.spaces[0] // empty')"; [ -n "$SPACE" ] && yabai -m space --focus "$SPACE"
+cmd - 2 : SPACE="$(yabai -m query --displays --display | jq -r '.spaces[1] // empty')"; [ -n "$SPACE" ] && yabai -m space --focus "$SPACE"
+cmd - 3 : SPACE="$(yabai -m query --displays --display | jq -r '.spaces[2] // empty')"; [ -n "$SPACE" ] && yabai -m space --focus "$SPACE"
+cmd - 4 : SPACE="$(yabai -m query --displays --display | jq -r '.spaces[3] // empty')"; [ -n "$SPACE" ] && yabai -m space --focus "$SPACE"
+
+# Window navigation through display borders.
+cmd - h : yabai -m window --focus west  || yabai -m display --focus west
+cmd - j : yabai -m window --focus south || yabai -m display --focus south
+cmd - k : yabai -m window --focus north || yabai -m display --focus north
+cmd - l : yabai -m window --focus east  || yabai -m display --focus east
+
+# Extended window navigation (disabled).
+# cmd - h    : yabai -m window --focus first
+# cmd - 0x27 : yabai -m window --focus last
+
+# Float / unfloat focused window (disabled).
+# cmd - space : yabai -m window --toggle float; sketchybar --trigger window_focus
+
+# Zoom focused window to fill its yabai-managed area.
+cmd - g : yabai -m window --toggle zoom-fullscreen; sketchybar --trigger window_focus
+
+# Zoom focused window to parent node (disabled).
+# cmd - f : yabai -m window --toggle zoom-parent; sketchybar --trigger window_focus
+
+
+## Window movement (shift + cmd - ...)
+
+# Warp inside the current Space first. If no target window exists in that
+# direction, resolve the adjacent display BEFORE moving the window, move the
+# exact focused window by id, then focus that display. The final relative move
+# remains as the fallback for floating windows / no adjacent display.
+shift + cmd - h : WINDOW="$(yabai -m query --windows --window | jq -r '.id // empty')"; TARGET="$(yabai -m query --displays --display west 2>/dev/null | jq -r '.index // empty')"; [ -n "$WINDOW" ] && { yabai -m window "$WINDOW" --warp west || { [ -n "$TARGET" ] && yabai -m window "$WINDOW" --display "$TARGET" && yabai -m display --focus "$TARGET" && sketchybar --trigger windows_on_spaces; } || yabai -m window "$WINDOW" --move rel:-10:0; }
+shift + cmd - j : WINDOW="$(yabai -m query --windows --window | jq -r '.id // empty')"; TARGET="$(yabai -m query --displays --display south 2>/dev/null | jq -r '.index // empty')"; [ -n "$WINDOW" ] && { yabai -m window "$WINDOW" --warp south || { [ -n "$TARGET" ] && yabai -m window "$WINDOW" --display "$TARGET" && yabai -m display --focus "$TARGET" && sketchybar --trigger windows_on_spaces; } || yabai -m window "$WINDOW" --move rel:0:10; }
+shift + cmd - k : WINDOW="$(yabai -m query --windows --window | jq -r '.id // empty')"; TARGET="$(yabai -m query --displays --display north 2>/dev/null | jq -r '.index // empty')"; [ -n "$WINDOW" ] && { yabai -m window "$WINDOW" --warp north || { [ -n "$TARGET" ] && yabai -m window "$WINDOW" --display "$TARGET" && yabai -m display --focus "$TARGET" && sketchybar --trigger windows_on_spaces; } || yabai -m window "$WINDOW" --move rel:0:-10; }
+shift + cmd - l : WINDOW="$(yabai -m query --windows --window | jq -r '.id // empty')"; TARGET="$(yabai -m query --displays --display east 2>/dev/null | jq -r '.index // empty')"; [ -n "$WINDOW" ] && { yabai -m window "$WINDOW" --warp east || { [ -n "$TARGET" ] && yabai -m window "$WINDOW" --display "$TARGET" && yabai -m display --focus "$TARGET" && sketchybar --trigger windows_on_spaces; } || yabai -m window "$WINDOW" --move rel:10:0; }
+
+# Toggle split orientation of the selected window node.
+shift + cmd - s : yabai -m window --toggle split
+
+# Move focused window to Space 1..4 ON ITS CURRENT DISPLAY.
+# The keybindings are unchanged; only the fragile global-index arithmetic is gone.
+shift + cmd - 1 : SPACE="$(yabai -m query --displays --display | jq -r '.spaces[0] // empty')"; [ -n "$SPACE" ] && yabai -m window --space "$SPACE" && sketchybar --trigger windows_on_spaces
+shift + cmd - 2 : SPACE="$(yabai -m query --displays --display | jq -r '.spaces[1] // empty')"; [ -n "$SPACE" ] && yabai -m window --space "$SPACE" && sketchybar --trigger windows_on_spaces
+shift + cmd - 3 : SPACE="$(yabai -m query --displays --display | jq -r '.spaces[2] // empty')"; [ -n "$SPACE" ] && yabai -m window --space "$SPACE" && sketchybar --trigger windows_on_spaces
+shift + cmd - 4 : SPACE="$(yabai -m query --displays --display | jq -r '.spaces[3] // empty')"; [ -n "$SPACE" ] && yabai -m window --space "$SPACE" && sketchybar --trigger windows_on_spaces
+
+# Move focused window to previous / next Mission Control Space and follow it.
+# Kept on lalt exactly as in the original config.
+shift + lalt - p : yabai -m window --space prev && yabai -m space --focus prev && sketchybar --trigger windows_on_spaces
+shift + lalt - n : yabai -m window --space next && yabai -m space --focus next && sketchybar --trigger windows_on_spaces
+
+# Mirror current Space.
+shift + lalt - x : yabai -m space --mirror x-axis
+shift + lalt - y : yabai -m space --mirror y-axis
+
+
+## Stacks (shift + ctrl - ...)
+
+# Add active window to directional stack (disabled).
+# shift + ctrl - h : yabai -m window west  --stack "$(yabai -m query --windows --window | jq -r '.id')"; sketchybar --trigger window_focus
+# shift + ctrl - j : yabai -m window south --stack "$(yabai -m query --windows --window | jq -r '.id')"; sketchybar --trigger window_focus
+# shift + ctrl - k : yabai -m window north --stack "$(yabai -m query --windows --window | jq -r '.id')"; sketchybar --trigger window_focus
+# shift + ctrl - l : yabai -m window east  --stack "$(yabai -m query --windows --window | jq -r '.id')"; sketchybar --trigger window_focus
+
+# Stack navigation, now wrapping at either end.
+shift + ctrl - n : yabai -m window --focus stack.next || yabai -m window --focus stack.first
+shift + ctrl - p : yabai -m window --focus stack.prev || yabai -m window --focus stack.last
+
+
+## Resize (ctrl + cmd - ...)
+
+ctrl + cmd - h : yabai -m window --resize right:-100:0 || yabai -m window --resize left:-100:0
+ctrl + cmd - j : yabai -m window --resize bottom:0:100 || yabai -m window --resize top:0:100
+ctrl + cmd - k : yabai -m window --resize bottom:0:-100 || yabai -m window --resize top:0:-100
+ctrl + cmd - l : yabai -m window --resize right:100:0 || yabai -m window --resize left:100:0
+
+# Equalize window sizes.
+ctrl + lalt - e : yabai -m space --balance
+
+# Toggle padding + gaps for the current Space.
+ctrl + lalt - g : yabai -m space --toggle padding; yabai -m space --toggle gap
+
+# Window borders were removed from yabai. Preserve your old border keybindings
+# using JankyBorders when installed. `borders` with no args loads
+# ~/.config/borders/bordersrc if present.
+ctrl + lalt - b : pkill -x borders 2>/dev/null || true
+shift + ctrl + lalt - b : if command -v borders >/dev/null 2>&1 && ! pgrep -x borders >/dev/null; then borders >/dev/null 2>&1 & fi
+
+
+## Insertion (shift + ctrl + lalt - ...)
+
+# Set insertion point for focused container (disabled).
+# shift + ctrl + lalt - h : yabai -m window --insert west
+# shift + ctrl + lalt - j : yabai -m window --insert south
+# shift + ctrl + lalt - k : yabai -m window --insert north
+# shift + ctrl + lalt - l : yabai -m window --insert east
+# shift + ctrl + lalt - s : yabai -m window --insert stack
+
+
+## Misc
+
+# Launch applications.
+cmd - m         : open -na "Kitty"
+cmd + shift - m : open -na "Ghostty"
+cmd - return    : open -a "Brave Browser"
+cmd - u         : open -a "Finder"
+cmd - b         : open -a "Visual Studio Code"
+cmd - i         : open -a "Spotify"
+cmd - o         : open -a "Mail"
+
+# Alternative terminal commands (disabled).
+# cmd - m : alacritty msg create-window
+# cmd - m : open -na "Alacritty"
+
+# New window in horizontal / vertical splits (disabled).
+# lalt - s : yabai -m window --insert east;  skhd -k "cmd - n"
+# lalt - v : yabai -m window --insert south; skhd -k "cmd - n"
+
+# Toggle SketchyBar.
+shift + cmd - space : sketchybar --bar hidden=toggle
+
+# Reload SketchyBar config.
+shift + lalt - r : sketchybar --remove '/.*/' && sh "$HOME/.config/sketchybar/sketchybarrc"
+
+# Toggle SketchyBar margin (disabled).
+# shift + cmd - n : CURRENT="$(sketchybar --query bar | jq -r '.y_offset')"; \
+#                   if [ "$CURRENT" -eq "0" ]; then \
+#                     yabai -m config external_bar all:49:0; \
+#                     sketchybar --animate sin 15 --bar margin=10 y_offset=10 corner_radius=9; \
+#                   else \
+#                     yabai -m config external_bar all:39:0; \
+#                     sketchybar --animate sin 15 --bar margin=0 y_offset=0 corner_radius=0; \
+#                   fi
