@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+readonly BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly DOTBOT_DIR="${BASEDIR}/.dotbot"
+readonly DOTBOT_REPOSITORY="https://github.com/anishathalye/dotbot.git"
+readonly DOTBOT_VERSION="v1.24.1"
+
+config="${1:-install.conf.yaml}"
+if [[ $# -gt 0 ]]; then
+  shift
+fi
+
+if [[ ! -f "${BASEDIR}/${config}" ]]; then
+  printf 'Unknown Dotbot profile: %s\n' "${config}" >&2
+  exit 2
+fi
+
+if [[ ! -x "${DOTBOT_DIR}/bin/dotbot" ]]; then
+  git clone --recursive --shallow-submodules --depth 1 --branch "${DOTBOT_VERSION}" \
+    "${DOTBOT_REPOSITORY}" "${DOTBOT_DIR}"
+fi
+
+git -C "${DOTBOT_DIR}" submodule update --init --recursive
+
+exec "${DOTBOT_DIR}/bin/dotbot" \
+  -d "${BASEDIR}" \
+  -c "${BASEDIR}/${config}" \
+  "$@"

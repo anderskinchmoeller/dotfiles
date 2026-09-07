@@ -1,0 +1,26 @@
+- defaults:
+    link:
+      create: true
+      relink: false
+
+- clean:
+    - "~"
+
+- link:
+    ~/.bash_profile: shell/bash_profile
+    ~/.zprofile: shell/zsh/zprofile
+    ~/.zshenv: shell/zsh/zshenv
+    ~/.zsh/.zshrc: shell/zsh/zshrc
+    ~/.hyper.js: config/hyper.js
+    ~/Brewfile: Brewfile
+    ~/.config/better-tmux: config/better-tmux
+    ~/.config/ghostty: config/ghostty
+    ~/.config/karabiner: config/karabiner
+    ~/.config/kitty: config/kitty
+    ~/.config/mac: config/mac
+    ~/.config/nvim: config/nvim
+    ~/.config/sketchybar: config/sketchybar
+    ~/.config/skhd: config/skhd
+    ~/.config/tmux: config/tmux
+    ~/.config/yabai: config/yabai
+    ~/.config/script.sh: config/tmux/session.sh

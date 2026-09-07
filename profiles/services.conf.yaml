@@ -1,0 +1,15 @@
+- shell:
+    - command: launchctl bootout "gui/$(id -u)/com.anders.skhd.master" 2>/dev/null || true; launchctl disable "gui/$(id -u)/com.anders.skhd.master" 2>/dev/null || true; launchctl disable "gui/$(id -u)/com.anders.skhd" 2>/dev/null || true; launchctl disable "gui/$(id -u)/com.skhd.daemon" 2>/dev/null || true; launchctl disable "gui/$(id -u)/homebrew.mxcl.skhd" 2>/dev/null || true
+      description: Disable obsolete custom and Homebrew skhd LaunchAgents
+      stdout: true
+      stderr: true
+
+    - command: launchctl bootout "gui/$(id -u)/com.koekeishiya.skhd" 2>/dev/null || true; launchctl disable "gui/$(id -u)/com.koekeishiya.skhd" 2>/dev/null || true
+      description: Disable the obsolete C skhd LaunchAgent
+      stdout: true
+      stderr: true
+
+    - command: /Applications/skhd.app/Contents/MacOS/skhd --start-service
+      description: Register and start the macOS 26-compatible skhd service
+      stdout: true
+      stderr: true

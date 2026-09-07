@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "requireNearDocumentBottom": true,
+  "documentBottomThresholdPercent": 80,
+  "scrollThresholdPercent": 90,
+  "scrollAmount": 200,
+  "scrollCooldownMs": 25,
+  "smoothScroll": true
+}

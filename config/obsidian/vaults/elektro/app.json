@@ -1,0 +1,14 @@
+{
+  "vimMode": true,
+  "promptDelete": false,
+  "attachmentFolderPath": "0dotfiles/0pasted images",
+  "focusNewTab": true,
+  "showLineNumber": false,
+  "openBehavior": "file:To do",
+  "userIgnoreFilters": [
+    "dotfiles/"
+  ],
+  "showInlineTitle": true,
+  "alwaysUpdateLinks": true,
+  "showUnsupportedFiles": true
+}

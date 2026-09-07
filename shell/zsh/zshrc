@@ -1,0 +1,420 @@
+# Path to your oh-my-zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+#export OPENAI_API_KEY="your_api_key"
+export PATH="$HOME/.local/bin:$HOME/.poetry/bin:/opt/homebrew/opt/rustup/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin"
+
+export ZPLUG_HOME="/opt/homebrew/opt/zplug"
+source "$ZPLUG_HOME/init.zsh"
+
+# Theme is set via `zplug`, see `config/zplugrc`.
+#ZSH_THEME="sobole"
+unsetopt KSH_ARRAYS
+unsetopt KSH_ZERO_SUBSCRIPT
+setopt TYPESET_SILENT
+
+# Uncomment the following line to use case-sensitive completion.
+CASE_SENSITIVE='false'
+
+# Uncomment the following line to use hyphen-insensitive completion. Case
+# sensitive completion must be off. _ and - will be interchangeable.
+HYPHEN_INSENSITIVE='false'
+
+# Uncomment the following line to enable command auto-correction.
+# ENABLE_CORRECTION="false"
+
+# Uncomment the following line if you want to change the command execution time
+# stamp shown in the history command output.
+# The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|"yyyy-mm-dd"
+HIST_STAMPS='yyyy-mm-dd'
+
+# Commands starting from " " (whitespace) won't be saved in history:
+setopt HIST_IGNORE_SPACE
+
+# Would you like to use another custom folder than $ZSH/custom?
+# ZSH_CUSTOM=/path/to/new-custom-folder
+
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+
+plugins=(
+  gitfast
+  gh
+)
+
+
+source "$ZSH/oh-my-zsh.sh"
+
+# Sourcing the Oh-My-ZSH source:
+#source "$ZSH/oh-my-zsh.sh"
+
+# This PATH needs to be set before all other modifications:
+
+# === Plugin management ===
+#export ZPLUG_HOME=/opt/homebrew/opt/zplug
+# === Shell parts ===
+
+# === Colorize stderr ===
+# Taken from https://github.com/fniessen/shell-leuven
+# Get the PID of the process running in a tmux pane
+
+# Then check elapsed wall-clock time for that PID (or its child)
+
+_color_stderr_bold() {
+  # Sysread & syswrite are part of `zsh/system'.
+  emulate -LR zsh
+  local stderr_bold_esc_code=$'\e[1;30m'
+  while sysread; do
+    syswrite -o 2 "${stderr_bold_esc_code}${REPLY}$terminfo[sgr0]"
+  done
+}
+
+# TODO: uncomment next line to highlight stderr as bold text for debugging
+# exec 2> >(_color_stderr_bold)
+
+# `.exports` is used to provide custom variables.
+
+
+# === Compiler flags ===
+
+# This is required because `openssl` is keg-only in `brew`,
+# see: `brew info openssl` for more information.
+
+export HOMEBREW_PREFIX="/opt/homebrew"
+
+export LDFLAGS="-L$HOMEBREW_PREFIX/opt/openssl/lib"
+export CPPFLAGS="-I$HOMEBREW_PREFIX/opt/openssl/include"
+export PKG_CONFIG_PATH="$HOMEBREW_PREFIX/opt/openssl/lib/pkgconfig"
+
+# === Path modifications ===
+
+# These lines should be the first ones!
+
+# GPG agent:
+#PATH="/usr/local/opt/gpg-agent/bin:$PATH"
+
+# Adds `pipx` binary files:
+# === General ===
+
+# Editor:
+export EDITOR=nvim
+export VISUAL=nvim
+
+# GPG:
+#export GPG_TTY="$(tty)"
+#eval "$(gpg-agent --daemon --allow-preset-passphrase > /dev/null 2>&1)"
+
+# Homebrew:
+export HOMEBREW_NO_ANALYTICS=1  # disables statistics that brew collects
+export HOMEBREW_NO_AUTO_UPDATE=1  # autoupdates break and slow down things
+
+# Docker:
+export DOCKER_CLI_HINTS=false  # disable ads in CLI :(
+
+# Pagers:
+# This affects every invocation of `less`.
+#
+#   -i       smart case-insensitive search
+#   -R       color
+#   -F       exit if there is less than one page of content
+#   -X       keep content on screen after exit
+#   -M       show more info at the bottom prompt line
+#   -x4      tabs are 4 instead of 8
+export LESS='-iRXFMx4 --mouse --wheel-lines=3'
+export PAGER='less'
+export MANPAGER='less'
+# === Version managers ===
+
+# nvm:
+#export NVM_DIR="$HOME/.nvm"
+#if [ -s "$(brew --prefix)/opt/nvm/nvm.sh" ]; then
+#  source "$(brew --prefix)/opt/nvm/nvm.sh" 
+
+# pyenv:
+# rbenv:
+
+#command -v pyenv >/dev/null && eval "$(pyenv init --path)"
+#command -v rbenv >/dev/null && eval "$(rbenv init -)"
+
+# rustup:
+#source "$HOME/.cargo/env"
+
+#[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
+
+# === Poetry ===
+# https://python-poetry.org/docs/configuration/
+
+export POETRY_VIRTUALENVS_IN_PROJECT=true
+
+
+# === Histories ===
+
+# Enable persistent REPL history for `node`.
+export NODE_REPL_HISTORY="$HOME/.node_history"
+
+# Use sloppy mode by default, m#atching web browsers.
+export NODE_REPL_MODE='sloppy'
+
+# Erlang and Elixir shell history:
+export ERL_AFLAGS='-kernel shell_history enabled'
+
+
+# === Code highlight ===
+# https://github.com/zsh-users/zsh-syntax-highlighting
+
+# We won't highlight code longer than 200 chars, because it is slow:
+export ZSH_HIGHLIGHT_MAXLENGTH=200
+
+
+# === PATH ===
+
+# This should be the last line:
+# === Aliases ===
+#
+alias mkdir='mkdir -p'
+alias x='sudo chmod +x'
+alias e='exit'
+alias py='python'
+alias c="g++ -std=c++11 main.cpp -o main && ./main"
+
+
+alias cd='cd'
+alias ..='cd ..;'
+alias ...='cd ..; cd ..;'
+alias ....='cd ..; cd ..; cd ..;'
+alias cd..='..'
+alias cd...='...'
+alias cd....='....'
+
+alias -g G='|grep '
+alias -g P='&|'
+
+
+# function take() {
+#   mkdir -p $@ && cd ${@:$#}
+# }
+
+function cheat() {
+curl cheat.sh/$1
+}
+
+
+
+# Sorts directories in top, colors, and prints `/` at directories:
+alias ls='gls --color -h --group-directories-first -F -a'
+
+# Use syntax highlight for `cat`:
+alias cat='bat --paging never --decorations never --plain'
+
+# Lock the screen (when going AFK)
+alias afk='pmset displaysleepnow'
+
+# Copy public key to clipboard:
+alias pubkey="cat ~/.ssh/id_rsa.pub | pbcopy | echo '=> Public key copied to pasteboard.'"
+
+# Find WiFi password, add the name:
+alias wifi_pass='security find-generic-password -wa'
+
+# I use this a lot:
+alias shrug="echo '¯\_(ツ)_/¯' | pbcopy | echo '=> Copied to pasteboard.'"
+
+alias v="nvim"
+
+
+
+# === Commonly used functions ===
+#
+
+function ex {
+ if [ -z "$1" ]; then
+    # display usage if no parameters given
+    echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
+ else
+    if [ -f $1 ] ; then
+        # NAME=${1%.*}
+        # mkdir $NAME && cd $NAME
+        case $1 in
+          *.tar.bz2)   tar xvjf ./$1    ;;
+          *.tar.gz)    tar xvzf ./$1    ;;
+          *.tar.xz)    tar xvJf ./$1    ;;
+          *.bz2)       bunzip2 ./$1     ;;
+          *.rar)       unrar x -ad ./$1 ;;
+          *.gz)        gunzip ./$1      ;;
+          *.tar)       tar xvf ./$1     ;;
+          *.tbz2)      tar xvjf ./$1    ;;
+          *.tgz)       tar xvzf ./$1    ;;
+          *.zip)       unzip ./$1       ;;
+          *.Z)         uncompress ./$1  ;;
+          *.7z)        7z x ./$1        ;;
+          *.xz)        unxz ./$1        ;;
+          *.exe)       cabextract ./$1  ;;
+          *)           echo "extract: '$1' - unknown archive method" ;;
+        esac
+    else
+        echo "$1 - file does not exist"
+    fi
+fi
+}
+
+
+
+pyclean () {
+  # Cleans py[cod] and cache dirs in the current tree:
+  fd -I -H \
+    '(__pycache__|\.(pytest_|mypy_)?cache|\.hypothesis\.py[cod]$)' \
+  | xargs rm -rf
+}
+
+
+take () {
+  if [ $# -ne 1 ]; then
+    echo 'usage: mc <dir-name>'
+    return 137
+  fi
+  # Create a new directory and enter it
+  local dir_name="$1"
+  mkdir -p "$dir_name" && cd "$dir_name"
+}
+
+
+# === fzf ===
+# https://github.com/junegunn/fzf
+#
+# if [[ ! "$PATH" == */opt/fzf/bin* ]]; then
+#   export PATH="$PATH:$(brew --prefix)/opt/fzf/bin"
+#
+#   # Enable `fzf`:
+#   eval "$(fzf --zsh)"
+# fi
+
+# fzf configuration:
+export FZF_DEFAULT_COMMAND='fd --hidden --strip-cwd-prefix --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND='fd --type=d --hidden --strip-cwd-prefix --exclude .git'
+export FZF_CTRL_T_OPTS="--preview '_fzf_complete_realpath {}'"
+export FZF_ALT_C_OPTS="--preview '_fzf_complete_realpath {}'"
+
+
+# Use generator to customize:
+# https://vitormv.github.io/fzf-themes/
+# To add wrap lines add:
+# --preview-window=wrap
+export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS
+--layout=reverse-list
+--bind 'ctrl-t:toggle'
+--bind 'ctrl-h:change-preview-window(hidden|)'
+--cycle
+-i
+"
+
+# Use fd (https://github.com/sharkdp/fd) for listing path candidates.
+# - The first argument to the function ($1) is the base path to start traversal
+# - See the source code (completion.{bash,zsh}) for the details.
+#_# See `.completions` file for all the list of fast tab completions.
+
+
+# === z ===
+# https://github.com/ajeetdsouza/zoxide
+
+# `zoxide` has an option to use `fzf` to provide completions natively,
+# but it works only for `z NAME<SPACE><TAB>`,
+# it does not work for `z NAME<TAB>`.
+# So, I have this usecase as a custom completion defined in `.completions`.
+eval "$(zoxide init zsh)"
+
+
+source "$HOME/.zsh/.zplugrc"
+
+# z () {
+#   # I need this function to setup custom code completion for `zoxide`.
+#   \__zoxide_z "$@"
+# }
+#
+# Enable hidden files on completion:
+setopt globdots
+
+# Uncomment to view all binds:
+# bindkey
+
+# Uncomment to set `CTRL-k` to show debug info:
+# Usage: `your command <CTRL-k>`
+# bindkey '^k' _complete_help
+
+# Unbind things that I don't use but accidentally press:
+bindkey -r '^S'
+
+
+# === fzf-tab ===
+# https://github.com/Aloxaf/fzf-tab
+
+# enable hidden files on completion
+zstyle ':completion:*' special-dirs true
+# hide parents
+zstyle ':completion:*' ignored-patterns '.|..|.DS_Store|**/.|**/..|**/.DS_Store|**/.git'
+# hide `..` and `.` from file menu
+zstyle ':completion:*' ignore-parents 'parent pwd directory'
+# force zsh not to show completion menu,
+# which allows fzf-tab to capture the unambiguous prefix
+zstyle ':completion:*' menu no
+
+# switch groups using `[` and `]`
+zstyle ':fzf-tab:*' switch-group '[' ']'
+
+# use the same layout as others and respect my default
+#local fzf_flags
+zstyle -a ':fzf-tab:*' fzf-flags fzf_flags
+#fzf_flags=( "${fzf_flags[@]}" '--layout=reverse-list' )
+zstyle ':fzf-tab:*' fzf-flags $fzf_flags
+# use `FZF_DEFAULT_OPTS` by default:
+zstyle ':fzf-tab:*' use-fzf-default-opts yes
+
+# Tools to autocomplete:
+# ----------------------
+# Big sources of inspiration:
+# - https://github.com/Freed-Wu/fzf-tab-source
+# - https://github.com/DanielFGray/fzf-scripts
+
+zstyle ':fzf-tab:complete:(\\|*/|)make:*' fzf-preview \
+  'case "$group" in
+  "[make target]")
+    make -n "$word" | _fzf_complete_realpath
+    ;;
+  "[make variable]")
+    make -pq | ag "^$word =" | _fzf_complete_realpath
+    ;;
+  "[file]")
+    _fzf_complete_realpath "$realpath"
+    ;;
+  esac'
+
+# complete `man`
+zstyle ':fzf-tab:complete:(\\|*/|)man:*' fzf-preview \
+  'man "$word"'
+
+# complete `killall`
+#
+zstyle ':completion:*:*:killall:*:*' command 'ps -u "$USERNAME" -o comm'
+zstyle ':fzf-tab:complete:(\\|*/|)killall:*' fzf-preview \
+  'ps aux | ag "$word" | _fzf_complete_realpath'
+
+# complete `zoxide`
+
+COMMAND_EXECUTION_TIMER_PRINT_DURATION_AFTER_COMMAND_OUTPUT=1
+
+
+zstyle ':fzf-tab:complete:(\\|*/|)z:*' fzf-preview \
+  '_fzf_complete_realpath "$word"'
+
+
+bindkey -M emacs -r '^D'
+bindkey -v
+bindkey -M viins '^P' history-beginning-search-backward
+bindkey -M viins '^N' history-beginning-search-forward
+bindkey "^E" autosuggest-execute
+bindkey "^D" forward-word
+bindkey "^F" vi-end-of-line
+
+bindkey "^B" backward-kill-word # Delete a WORD backward.
+
+

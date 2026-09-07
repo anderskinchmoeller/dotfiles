@@ -1,0 +1,23 @@
+- shell:
+    - command: mkdir -p "$HOME/Library/Application Support/obsidian" "$HOME/Documents/Obsidian Vault/.obsidian" "$HOME/Elektro/.obsidian" "$HOME/elektronik/Elektronik/.obsidian"
+      description: Create Obsidian configuration directories
+
+    - command: rsync -a config/obsidian/app/ "$HOME/Library/Application Support/obsidian/"
+      description: Restore Obsidian application configuration
+      stdout: true
+      stderr: true
+
+    - command: rsync -a config/obsidian/vaults/obsidian-vault/ "$HOME/Documents/Obsidian Vault/.obsidian/"
+      description: Restore Obsidian Vault settings
+      stdout: true
+      stderr: true
+
+    - command: rsync -a config/obsidian/vaults/elektro/ "$HOME/Elektro/.obsidian/"
+      description: Restore Elektro vault settings
+      stdout: true
+      stderr: true
+
+    - command: rsync -a config/obsidian/vaults/elektronik/ "$HOME/elektronik/Elektronik/.obsidian/"
+      description: Restore Elektronik vault settings
+      stdout: true
+      stderr: true

@@ -1,0 +1,10 @@
+{
+  "deleteFileAfterConversion": true,
+  "importComments": true,
+  "embedImageData": true,
+  "ignoreAttachments": false,
+  "fallbackAttachmentName": "Attachment",
+  "attachmentsFolder": "subfolder",
+  "customAttachmentsFolder": "Attachments",
+  "useImageAltAsFilename": false
+}

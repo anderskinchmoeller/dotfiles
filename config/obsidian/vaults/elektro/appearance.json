@@ -1,0 +1,14 @@
+{
+  "cssTheme": "Minimal",
+  "theme": "system",
+  "accentColor": "#431ff4",
+  "translucency": true,
+  "baseFontSizeAction": true,
+  "baseFontSize": 14,
+  "nativeMenus": true,
+  "showRibbon": false,
+  "showViewHeader": true,
+  "monospaceFontFamily": "MartianMono Nerd Font Propo",
+  "interfaceFontFamily": "MartianMono Nerd Font",
+  "textFontFamily": "MartianMono Nerd Font"
+}

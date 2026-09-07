@@ -1,0 +1,11 @@
+{
+  "id": "beauty-diagram",
+  "name": "Beauty Diagram",
+  "version": "0.1.16",
+  "minAppVersion": "1.4.0",
+  "description": "Beautify Mermaid and PlantUML diagrams with 9 polished themes — Modern, Slate, Blueprint, Memphis, and more. Dark-mode friendly. One-click polish, no setup.",
+  "author": "Beauty Diagram",
+  "authorUrl": "https://www.beauty-diagram.com",
+  "fundingUrl": "https://www.beauty-diagram.com/pricing",
+  "isDesktopOnly": false
+}

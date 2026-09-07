@@ -1,0 +1,6 @@
+- shell:
+    - command: bash config/mac/defaults.sh
+      description: Apply safe, user-level macOS defaults
+      stdin: true
+      stdout: true
+      stderr: true

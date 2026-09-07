@@ -1,0 +1,12 @@
+- shell:
+    - command: brew bundle --file=Brewfile
+      description: Install Homebrew packages from Brewfile
+      stdin: true
+      stdout: true
+      stderr: true
+
+    - command: npm install --prefix config/better-tmux
+      description: Install better-tmux dependencies
+      stdin: true
+      stdout: true
+      stderr: true

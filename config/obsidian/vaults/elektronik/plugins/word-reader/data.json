@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "common": {
+    "language": "zh-CN",
+    "defaultZoomPercent": 100,
+    "largeFileWarningMb": 25
+  },
+  "docx": {
+    "defaultFitWidth": false,
+    "showOutlineByDefault": true,
+    "enableImagePreview": true
+  },
+  "pptx": {
+    "defaultFitWindow": true,
+    "showNavigationByDefault": true,
+    "showNotesByDefault": false
+  },
+  "xlsx": {
+    "defaultFitWidth": true
+  },
+  "readingStates": [
+    {
+      "path": "Fagbøger/M1 - ohms/02 Opgave - Præfiks .docx",
+      "mtime": 1788163640206,
+      "format": "docx",
+      "lastAccessed": 106,
+      "position": {
+        "scrollLeft": 0,
+        "scrollTop": 3717.5
+      },
+      "zoom": {
+        "scale": 1,
+        "fit": false
+      },
+      "navigation": {
+        "panelVisible": true,
+        "collapsedIds": []
+      }
+    }
+  ]
+}

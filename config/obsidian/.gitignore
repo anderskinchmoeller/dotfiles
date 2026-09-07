@@ -1,0 +1,14 @@
+# Machine/session state
+workspace*.json
+.DS_Store
+
+# Downloaded plugin and theme code is restored by Obsidian, not dotfiles.
+main.js
+styles.css
+theme.css
+
+# These plugin settings may contain API credentials.
+vaults/obsidian-vault/plugins/obsidian-excalidraw-plugin/data.json
+vaults/elektro/plugins/chatgpt-md/data.json
+vaults/elektro/plugins/obsidian-excalidraw-plugin/data.json
+vaults/elektro/plugins/quickadd/data.json
