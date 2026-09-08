@@ -16,3 +16,9 @@ private/
 *.zwc
 node_modules/
 config/sketchybar/helper/helper
+
+# MATLAB generated files
+*.asv
+*.mexmaci64
+codegen/
+slprj/

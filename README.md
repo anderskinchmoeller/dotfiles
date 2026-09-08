@@ -7,6 +7,7 @@ Personal macOS configuration managed with [Dotbot](https://github.com/anishathal
 - Zsh and Bash profiles
 - Ghostty, Kitty, Hyper, and tmux
 - Neovim
+- MATLAB startup configuration
 - yabai, skhd, SketchyBar, and Karabiner-Elements
 - Obsidian application settings and portable settings for all three vaults
 - macOS defaults

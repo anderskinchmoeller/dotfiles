@@ -13,6 +13,7 @@
     ~/.zsh/.zshrc: shell/zsh/zshrc
     ~/.hyper.js: config/hyper.js
     ~/Brewfile: Brewfile
+    ~/Documents/MATLAB/startup.m: config/matlab/startup.m
     ~/.config/better-tmux: config/better-tmux
     ~/.config/ghostty: config/ghostty
     ~/.config/karabiner: config/karabiner
