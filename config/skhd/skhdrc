@@ -33,6 +33,10 @@ shift + cmd - 5 : "$HOME/.config/skhd/skhd-helper.sh" move-to-space 5
 shift + cmd - s : yabai -m window --toggle split
 cmd - g : yabai -m window --toggle zoom-fullscreen; sketchybar --trigger window_focus
 
+## Replace native fullscreen shortcuts with zoom-fullscreen
+ctrl + cmd - f : yabai -m window --toggle zoom-fullscreen; sketchybar --trigger window_focus
+fn - f : yabai -m window --toggle zoom-fullscreen; sketchybar --trigger window_focus
+
 ## Navigate and arrange Spaces
 
 shift + lalt - p : yabai -m window --space prev && yabai -m space --focus prev && sketchybar --trigger windows_on_spaces
@@ -57,19 +61,22 @@ ctrl + lalt - g : yabai -m space --toggle padding; yabai -m space --toggle gap
 
 ## Optional JankyBorders controls
 
+shift + cmd - b : "$HOME/.config/skhd/skhd-helper.sh" toggle-borders
 ctrl + lalt - b : pkill -x borders 2>/dev/null || true
 shift + ctrl + lalt - b : if command -v borders >/dev/null 2>&1 && ! pgrep -x borders >/dev/null; then borders >/dev/null 2>&1 & fi
 
 ## Applications
+# cmd - b         : open -a "Visual Studio Code"
+# cmd + shift - o : open -na "ChatGPT"
 
 cmd - m         : open -na "Kitty"
-cmd + shift - o : open -na "ChatGPT"
 cmd + shift - m : open -na "Ghostty"
 cmd - return    : open -a "Brave Browser"
 cmd + shift - u : open -a "Finder"
-cmd - b         : open -a "Visual Studio Code"
+cmd - b : open -na "Claude"
 cmd - i         : open -a "Spotify"
 cmd - o         : open -a "Obsidian"
+cmd + shift - o : open -na "sioyek"
 
 ## Insertion and SketchyBar
 
@@ -78,3 +85,7 @@ lalt - s : yabai -m window --insert east; skhd -k "cmd - n"
 shift + cmd - space : sketchybar --bar hidden=toggle
 shift + lalt - r : sketchybar --remove '/.*/' && sh "$HOME/.config/sketchybar/sketchybarrc"
 shift + cmd - n : "$HOME/.config/skhd/skhd-helper.sh" toggle-bar-margin
+
+# Full-size windows on desktop six
+cmd - 6 : yabai -m space --focus fullsize
+shift + cmd - 6 : yabai -m window --space fullsize

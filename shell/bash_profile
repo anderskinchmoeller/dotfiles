@@ -1,1 +1,1 @@
-export PATH="$HOME/Library/Python/3.9/bin:$PATH"
+export PATH={/Users/anderskinch/Library/Python/3.9/bin}:$PATH

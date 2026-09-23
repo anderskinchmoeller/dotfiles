@@ -1,70 +1,40 @@
-#!/usr/bin/env sh
-#
-# yabai -m signal --add event=dock_did_restart action="env -u TERMINFO sudo yabai --load-sa"
-# env -u TERMINFO sudo yabai --load-sa
-#
-#source ~/.zshrc 2>/dev/null || source ~/.bash_profile 2>/dev/null || true
-#yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
-#sudo yabai --load-sa
+#!/bin/sh
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+CONFIG_DIR="$HOME/.config/yabai"
 
-# Unload the macOS WindowManager process
-# launchctl unload -F /System/Library/LaunchAgents/com.apple.WindowManager.plist > /dev/null 2>&1 &
+# Load the scripting addition at every start (login, reboot, service restart).
+# Space focus/create/destroy and moving windows between Spaces depend on it.
+sudo -n /opt/homebrew/bin/yabai --load-sa 2>/dev/null || echo "yabairc: could not load scripting addition (check /etc/sudoers.d/yabai)" >&2
 
-yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
-yabai -m signal --add event=window_focused action="sketchybar --trigger window_focus"
-yabai -m signal --add event=display_added action="sleep 5 && $HOME/.config/yabai/create_spaces.sh"
-yabai -m signal --add event=display_removed action="sleep 5 && $HOME/.config/yabai/create_spaces.sh"
-yabai -m signal --add event=window_created action="sketchybar --trigger windows_on_spaces"
-yabai -m signal --add event=window_destroyed action="sketchybar --trigger windows_on_spaces"
-
-$HOME/.config/yabai/create_spaces.sh
-
-yabai -m config external_bar               all:5:0     \
-                # window_border              on           \
-#                 mouse_follows_focus        on          \
-#                 focus_follows_mouse        autofocus           \
-                # window_zoom_persist        off          \
-                # window_placement           second_child \
-                # window_shadow              float        \
-                # window_opacity             off           \
-                # window_opacity_duration    0.15         \
-                # active_window_opacity      1.0          \
-                # normal_window_opacity      1.0         \
-                # window_border_width        2            \
-                # window_border_hidpi        off          \
-                # window_border_radius       2           \
-                # window_animation_duration  0.05         \
-                # active_window_border_color 0xffe1e3e4   \
-                # normal_window_border_color 0xff2a2f38   \
-                # insert_feedback_color      0xff9dd274   \
-                # split_ratio                0.50         \
-                # auto_balance               off          \
-                # mouse_modifier             fn           \
-                # mouse_action1              move         \
-                # mouse_action2              resize       \
-                # mouse_drop_action          swap         \
-                # top_padding                0           \
-                # bottom_padding             0           \
-                # left_padding               0           \
-                # right_padding              0           \
-                # window_gap                 0
-
-# yabai -m config mouse_follows_focus on
-yabai -m config focus_follows_mouse autofocus
+# Automatically tile ordinary desktops; desktop six uses a full-size stack.
 yabai -m config layout bsp
-yabai -m rule --add app="^(LuLu|Vimac|Spotify|Calculator|Signal|Finder|Software Update|Dictionary|VLC|System Preferences|System Settings|zoom.us|Photo Booth|Archive Utility|Python|LibreOffice|App Store|Steam|Alfred|Activity Monitor)$" manage=off
-yabai -m rule --add label="Finder" app="^Finder$" title="(Co(py|nnect)|Move|Info|Pref)" manage=off
-yabai -m rule --add label="Safari" app="^Safari$" title="^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$" manage=off
-yabai -m rule --add label="About This Mac" app="System Information" title="About This Mac" manage=off
-yabai -m rule --add label="Select file to save to" app="^Inkscape$" title="Select file to save to" manage=off
-#
-# yabai -m rule --add app="ChatGPT" space=1
-# yabai -m rule --add app="Kitty" space=^3
-# yabai -m rule --add app="Brave" space=^3
-# yabai -m rule --add app="Obsidian" space=4
-# yabai -m rule --add app="Terminal" space=5
-#
-echo "yabai configuration loaded.."
+yabai -m config external_bar all:5:0
+yabai -m config mouse_follows_focus on
+yabai -m config focus_follows_mouse off
 
+# Labels make reloading this configuration idempotent.
+for event in window_focused window_created window_destroyed; do
+    yabai -m signal --add label="bar-$event" event="$event" action="sketchybar --trigger window_focus --trigger windows_on_spaces"
+done
+# No minimising: bring minimised windows straight back (needs the scripting addition).
+yabai -m signal --add label=no-minimize event=window_minimized action='yabai -m window $YABAI_WINDOW_ID --deminimize'
+# No native fullscreen: the green button zooms the window within its Space instead.
+yabai -m signal --add label=no-native-fullscreen event=window_resized action="$CONFIG_DIR/no-native-fullscreen.sh"
+yabai -m signal --add label=reload-sa event=dock_did_restart action="sudo -n /opt/homebrew/bin/yabai --load-sa"
 
-#yabai -m signal --add event=application_front_switched action="$HOME/.config/yabai/customScript.sh"
+"$CONFIG_DIR/create_spaces.sh" || echo "yabairc: create_spaces.sh failed" >&2
+yabai -m rule --add label=float-utilities app='^(System Settings|System Preferences|Spotify)$' manage=off
+yabai -m rule --add label=Safari app='^Safari$' title='^(General|(Tab|Password|Website|Extension)s|AutoFill|Se(arch|curity)|Privacy|Advance)$' manage=off
+yabai -m rule --add label='About This Mac' app='System Information' title='About This Mac' manage=off
+yabai -m rule --add label='Select file to save to' app='^Inkscape$' title='Select file to save to' manage=off
+yabai -m rule --apply float-utilities
+yabai -m rule --add label=tile-ghostty app='^[Gg]hostty$' manage=on
+yabai -m rule --apply tile-ghostty
+
+# Manual-layout restoration is disabled while automatic tiling owns geometry.
+# Saved display layouts remain in ~/.local/state/yabai-layouts/.
+
+# Keep the existing optional window borders without starting duplicate workers.
+if command -v borders >/dev/null 2>&1 && ! pgrep -x borders >/dev/null 2>&1; then
+    borders active_color=0xff58a6ff inactive_color=0xff58a6ff width=5.0 >/dev/null 2>&1 &
+fi

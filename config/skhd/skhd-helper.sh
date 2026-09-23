@@ -134,10 +134,24 @@ toggle_sketchybar_margin() {
   fi
 }
 
+toggle_borders() {
+  local borders_bin
+  borders_bin="$(command -v borders 2>/dev/null || echo /opt/homebrew/bin/borders)"
+
+  if pgrep -x borders >/dev/null 2>&1; then
+    pkill -x borders >/dev/null 2>&1 || true
+  elif [[ -x "$borders_bin" ]]; then
+    # Same style as yabairc starts at login.
+    "$borders_bin" active_color=0xff58a6ff inactive_color=0xff58a6ff width=5.0 >/dev/null 2>&1 &
+    disown 2>/dev/null || true
+  fi
+}
+
 case "${1:-}" in
   focus-space)        focus_space "${2:-0}" ;;
   focus-direction)    focus_direction "${2:-}" ;;
   move-direction)     move_direction "${2:-}" ;;
   move-to-space)      move_to_space "${2:-0}" ;;
   toggle-bar-margin)  toggle_sketchybar_margin ;;
+  toggle-borders)     toggle_borders ;;
 esac

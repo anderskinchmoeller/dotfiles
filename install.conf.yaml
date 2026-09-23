@@ -23,5 +23,7 @@
     ~/.config/sketchybar: config/sketchybar
     ~/.config/skhd: config/skhd
     ~/.config/tmux: config/tmux
+    ~/.config/tex: config/tex
+    ~/.config/vimium-c: config/vimium-c
     ~/.config/yabai: config/yabai
     ~/.config/script.sh: config/tmux/session.sh

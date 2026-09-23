@@ -139,6 +139,7 @@ export MANPAGER='less'
 
 # rustup:
 #source "$HOME/.cargo/env"
+export DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib:$DYLD_FALLBACK_LIBRARY_PATH
 
 #[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
 
@@ -173,6 +174,7 @@ export ZSH_HIGHLIGHT_MAXLENGTH=200
 # === Aliases ===
 #
 alias mkdir='mkdir -p'
+alias size='du -sh'
 alias x='sudo chmod +x'
 alias e='exit'
 alias py='python'
@@ -220,8 +222,7 @@ alias wifi_pass='security find-generic-password -wa'
 alias shrug="echo '¯\_(ツ)_/¯' | pbcopy | echo '=> Copied to pasteboard.'"
 
 alias v="nvim"
-
-
+# alias ml='cd ~/fag/MM553/exercises/ && /Applications/MATLAB_R2026a.app/bin/matlab -nodesktop -nosplash'
 
 # === Commonly used functions ===
 #

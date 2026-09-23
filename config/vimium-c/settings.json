@@ -1,0 +1,30 @@
+{
+	"name": "Vimium C",
+	"@time": "9/23/2026, 12:49:41 PM",
+	"time": 1790160581921,
+	"environment": {
+		"extension": "2.12.2",
+		"platform": "mac",
+		"chromium": 153
+	},
+	"exclusionOnlyFirstMatch": true,
+	"keyLayout": 2,
+	"keyMappings": [
+		"#!no-check",
+		"map w nextTab",
+		"map q previousTab",
+		"map a goBack",
+		"map s goForward",
+		"map S goForward reuse=-1",
+		"map A goBack reuse=-1",
+		"map <c-x> closeOtherTabs",
+		"map X restoreTab",
+		"map z zoomIn",
+		"map Z zoomOut",
+		"map <c-z> zoomReset",
+		"map < moveTabLeft",
+		"map > moveTabRight",
+		""
+	],
+	"vimSync": true
+}

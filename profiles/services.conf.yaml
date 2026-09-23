@@ -13,3 +13,8 @@
       description: Register and start the macOS 26-compatible skhd service
       stdout: true
       stderr: true
+
+    - command: mkdir -p "$HOME/Library/LaunchAgents" && cp config/launchagents/com.anders.alttab.plist "$HOME/Library/LaunchAgents/" && { launchctl bootout "gui/$(id -u)/com.anders.alttab" 2>/dev/null || true; } && launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.anders.alttab.plist"
+      description: Start AltTab at login via a LaunchAgent (copied, since launchd ignores symlinked plists)
+      stdout: true
+      stderr: true

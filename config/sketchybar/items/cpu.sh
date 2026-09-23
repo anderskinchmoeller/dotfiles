@@ -32,7 +32,7 @@ cpu_sys=(
 )
 
 cpu_user=(
-  graph.color=$BLUE
+  graph.color=$WHITE
   label.drawing=off
   icon.drawing=off
   background.height=30

@@ -1,33 +1,46 @@
 #!/bin/sh
-
-DESIRED_SPACES_PER_DISPLAY=5
-CURRENT_SPACES="$(yabai -m query --spaces | jq -r '
-  group_by(.display)[]
-  | map(select(."is-native-fullscreen" == false) | .index)
-  | @sh
-')"
-
-DELTA=0
-while read -r line
-do
-  LAST_SPACE="$(echo "${line##* }")"
-  LAST_SPACE=$(($LAST_SPACE+$DELTA))
-  EXISTING_SPACE_COUNT="$(echo "$line" | wc -w)"
-  MISSING_SPACES=$(($DESIRED_SPACES_PER_DISPLAY - $EXISTING_SPACE_COUNT))
-  if [ "$MISSING_SPACES" -gt 0 ]; then
-    for i in $(seq 1 $MISSING_SPACES)
-    do
-      yabai -m space --create "$LAST_SPACE"
-      LAST_SPACE=$(($LAST_SPACE+1))
+# Maintain six ordinary desktops; the sixth uses full-size stacked windows.
+set -eu
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+spaces=$(yabai -m query --spaces)
+count=$(printf '%s' "$spaces" | jq '[.[] | select(."is-native-fullscreen" == false)] | length')
+while [ "$count" -lt 6 ]; do
+    # Needs the scripting addition; stop trying instead of aborting the script.
+    yabai -m space --create 1 || break
+    count=$((count + 1))
+done
+# Evacuate surplus desktops before removing them, highest index first.
+spaces=$(yabai -m query --spaces)
+general=$(printf '%s' "$spaces" | jq -r '[.[] | select(."is-native-fullscreen" == false)][4].index')
+extras=$(printf '%s' "$spaces" | jq -r '[.[] | select(."is-native-fullscreen" == false)][6:] | reverse | .[].index')
+for index in $extras; do
+    windows=$(yabai -m query --windows --space "$index" | jq -r '.[].id')
+    for window in $windows; do
+        yabai -m window "$window" --space "$general" || true
     done
-  elif [ "$MISSING_SPACES" -lt 0 ]; then
-    for i in $(seq 1 $((-$MISSING_SPACES)))
-    do
-      yabai -m space --destroy "$LAST_SPACE"
-      LAST_SPACE=$(($LAST_SPACE-1))
-    done
-  fi
-  DELTA=$(($DELTA+$MISSING_SPACES))
-done <<< "$CURRENT_SPACES"
-
-sketchybar --trigger space_change --trigger windows_on_spaces
+    yabai -m space --destroy "$index" || true
+done
+spaces=$(yabai -m query --spaces)
+slot=0
+for label in claude brave signal sioyek general fullsize; do
+    index=$(printf '%s' "$spaces" | jq -r --argjson slot "$slot" '[.[] | select(."is-native-fullscreen" == false)][$slot].index // empty')
+    [ -n "$index" ] || break
+    yabai -m space "$index" --label "$label" || true
+    if [ "$label" = fullsize ]; then
+        yabai -m config --space "$index" layout stack
+        for padding in top_padding bottom_padding left_padding right_padding window_gap; do
+            yabai -m config --space "$index" "$padding" 0
+        done
+    else
+        yabai -m config --space "$index" layout bsp
+    fi
+    slot=$((slot + 1))
+done
+yabai -m rule --add label=route-claude app='^Claude$' space=claude
+yabai -m rule --add label=route-brave app='^Brave Browser$' space=brave
+yabai -m rule --add label=route-signal app='^Signal$' space=signal
+yabai -m rule --add label=route-sioyek app='^[Ss]ioyek$' space=sioyek
+# Rules route new windows; manual moves to space 6 remain in place.
+if command -v sketchybar >/dev/null 2>&1; then
+    sketchybar --trigger space_change --trigger windows_on_spaces || true
+fi
